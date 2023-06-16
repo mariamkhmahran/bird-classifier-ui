@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  server:
+    image: tensorflow/serving:latest
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./server:/server
+    command:
+      - "--model_name=birdsClassifier"
+      - "--model_base_path=/server/saved_model"
+
+  # app:
+  #   build: ./client
+  #   image: birds/client
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - server

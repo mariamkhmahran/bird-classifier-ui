@@ -1,1 +1,8 @@
 **/.DS_Store
+
+/tfLite
+/screenshots
+server/saved_model/**/variables #This is temporary until git LFS is renewed next month
+
+.ipynb_checkpoints
+

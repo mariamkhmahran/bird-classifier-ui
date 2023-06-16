@@ -1,0 +1,104 @@
+:root {
+    --primary: #2c4d68;
+    --secondary: #F6D8AE;
+}
+
+body {
+    color: var(--primary) !important;
+}
+
+.container {
+    height: 100vh;
+}
+
+.primary {
+    color: #2c4d68
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+.flock_of_birds {
+    width: 200px;
+    height: 200px;
+}
+
+.btn {
+    background-color: white;
+    border-color: white;
+}
+
+.btn.primary {
+    color: var(--primary);
+}
+
+input {
+    color: var(--primary) !important;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.25rem #2c4d6825 !important;
+    outline: none !important;
+}
+
+.b {
+    font-weight: 800;
+}
+
+.table {
+    color: #2c4d68;
+}
+
+.section {
+    border-radius: 50px;
+    padding: 50px;
+    color: white;
+    background-color: var(--primary);
+    min-height: 75vh;
+}
+
+.image {
+    max-width: 50%;
+}
+
+.feedback {
+    border-radius: 10px;
+    color: var(--primary);
+    background-color: var(--secondary);
+}
+
+.hide {
+    display: none !important;
+}
+
+.title {
+    color: #fff;
+}
+
+.btn-outline-primary:not(.btn-outline-primary:hover)  {
+    color: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
+}
+
+.btn-outline-primary:hover {
+    color: white;
+    background-color: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
+}
+
+.details {
+    width: 80%;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.chart_container {
+    height: 500px !important;
+}
+
+.big_title {
+    font-size: 50px;
+}

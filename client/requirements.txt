@@ -1,0 +1,9 @@
+Flask
+Flask-WTF
+tensorflow
+numpy
+opencv-python-headless<4.3
+Pillow
+matplotlib
+requests
+mysql-connector

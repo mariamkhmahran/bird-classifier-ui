@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Bird Classifier - results</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+
+<body>
+    <div class="container px-5 pt-3 pb-5">
+        <div class="header mb-3 d-flex flex-row justify-content-between align-items-center">
+            <div class="d-flex flex-row align-items-center grow">
+                <img src="{{ url_for('static', filename='assets/bird.svg') }}" />
+                <h4 class="px-3 primary b fill-w">Bird Classifier</h4>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Home</a>
+        </div>
+
+        <div class="details col mx-auto">
+            <div class="row">
+                <span class="col-3 mb-3 b">Model name:</span>
+                <span class="col-9 ml-3">birdsClassifier</span>
+            </div>
+            <div class="row">
+                <span class="col-3 mb-3 b">Model architecture:</span>
+                <span class="col-9 ml-3">Faster R-CNN ResNet101 V1</span>
+            </div>
+            <div class="row">
+                <span class="col-3 mb-3 b">Number of classes:</span>
+                <span class="col-9 ml-3">3</span>
+            </div>
+            <div class="row">
+                <span class="col-3 mb-3 b">Uploaded images:</span>
+                <span class="col-9 ml-3">{{ images }}</span>
+            </div>
+            <div class="chart_container mx-auto">
+                <canvas class="chart" id="myChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+    function init() {
+        // prepare and format chart data coming from Flask
+        new Chart(document.getElementById("myChart"), {
+            type: 'line',
+            data: {
+                labels: '{{ ticks }}'.replace(/[\[\]\&#39;]/g, '').split(','),
+                datasets: [{
+                    data: JSON.parse('{{ avg1 }}'),
+                    borderColor: "#3e95cd",
+                    label: 'Avg confidence score class 1',
+                    fill: false
+                }, {
+                    data: JSON.parse('{{ avg2 }}'),
+                    label: 'Avg confidence score class 2',
+                    borderColor: "#8e5ea2",
+                    fill: false
+                }, {
+                    data: JSON.parse('{{ avg3 }}'),
+                    label: 'Avg confidence score class 3',
+                    borderColor: "#3cba9f",
+                    fill: false
+                }, {
+                    data: JSON.parse('{{ user_satisfaction }}'),
+                    label: 'User satisfaction rate',
+                    borderColor: "#F6D8AE",
+                    fill: false
+                }
+                ]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            max: 1,
+                            min: 0,
+                            stepSize: 0.1
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Performance overtime'
+                },
+                hover: {
+                    mode: 'index',
+                    intersect: true
+                },
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    window.addEventListener('load', init, false);
+</script>
+
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Bird Classifier - results</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+
+<body>
+    <div class="container px-5 pt-3 pb-5">
+        <div class="header mb-3 d-flex flex-row justify-content-between align-items-center">
+            <div class="d-flex flex-row align-items-center grow">
+                <img src="{{ url_for('static', filename='assets/bird.svg') }}" />
+                <h4 class="px-3 primary b fill-w">Bird Classifier</h4>
+            </div>
+
+            <div class="d-flex flex-row">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary mx-2">Home</a>
+                <a href="{{ url_for('monitor') }}" class="btn btn-outline-primary">Monitoring</a>
+            </div>
+        </div>
+
+        <div class="col px-5 mx-5">
+            <div class=" mb-4 row justify-content-between">
+                <img src="data:image/png;base64, {{ original }}" class="image" id="original">
+                <img src="data:image/png;base64, {{ inferenced }}" class="image" id="inferenced">
+            </div>
+            <div class="col">
+                <p class="primary"> <b>Image ID:</b> #{{ meta_data.ID }}</p>
+                <p class="primary"> <b>Image name:</b> {{ meta_data.img_name }}</p>
+            </div>
+
+            <table class="table py-3 mb-5">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Bird Species</th>
+                        <th scope="col">Probability</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in meta_data.objects %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ item.class.name }}</td>
+                        <td>{{ item.score }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="feedback p-4 my-3">
+                <div class="submitted title d-flex justify-content-center hide">
+                    <h1 class="b">Thank you for your feedback!</h1>
+                </div>
+
+                <div class="form">
+                    <div class="title col mb-3">
+                        <h2 class="b">Feedback</h2>
+                        <span>Help us improve! Let us know how well the model performed on your image.</span>
+                    </div>
+
+                    <p class="b">Did it accurately detect all your birds?</p>
+                    <form id="form" action="feedback" method="post">
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" onchange="onChange" type="radio" name="vote" id="yes"
+                                    value="yes">
+                                <label class="form-check-label" for="inlineRadio1">yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" onchange="onChange" type="radio" name="vote" id="no"
+                                    value="no">
+                                <label class="form-check-label" for="inlineRadio2">no</label>
+                            </div>
+                        </div>
+
+                        <div class="survey hide">
+                            <hr class="my-4 mx-2" />
+                            <div class="row my-3 d-flex align-items-center">
+                                <label class="form-label col-5 b" for="ground_truth">How many birds are in the
+                                    picture?</label>
+                                <div class="form-outline col-2">
+                                    <input name="ground_truth" type="number" min="0" id="ground_truth"
+                                        class="form-control" placeholder="0" />
+                                </div>
+                            </div>
+                            <div class="row my-3  d-flex align-items-center">
+                                <label class="form-label col-5 b" for="predicted">How many birds got accurately
+                                    detected?</label>
+                                <div class="form-outline col-2">
+                                    <input name="predicted" type="number" min="0" id="predicted" class="form-control"
+                                        placeholder="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="row mx-2 d-flex justify-content-end">
+                            <button type="submit" class="col-2 btn primary" id="submit_btn"
+                                disabled="true">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    function init() {
+        // This function is called on start up
+        
+        // Add a listener to the form to listen to form updates
+        form = document.querySelector('form')
+        form.addEventListener('change', onChange, false);
+
+        // If user has already voted  ->  remove the form and show thank you note
+        if ('{{ is_submitted }}' === 'True') {
+            document.querySelector('.submitted').classList.remove('hide')
+            document.querySelector('.form').classList.add('hide')
+        }
+    }
+
+    function onChange(e) {
+        var data = {}; // Form values
+        var formData = new FormData(form);
+        for (var key of formData.keys()) {
+            data[key] = formData.get(key);
+        }
+
+        if (data.vote === 'no') {
+            // If the user voted that the model did not detect all birds in picture
+            // Show the survey
+
+            survey = document.querySelector('.survey')
+
+            if (survey.classList.contains('hide'))
+                survey.classList.remove('hide')
+
+            if (!!(data.ground_truth && data.predicted))
+                document.querySelector('#submit_btn').disabled = false;
+            else
+                document.querySelector('#submit_btn').disabled = true; // disabled until form is filled
+        }
+
+        if (data.vote === 'yes') {
+            // If the user is satisfied with the results
+            // enable submission without further questions
+            document.querySelector('#submit_btn').disabled = false;
+            survey = document.querySelector('.survey')
+
+            if (!survey.classList.contains('hide')) // hide survey questions
+                survey.classList.add('hide')
+        }
+    }
+
+    function onSubmit(e) {
+        // submit form data
+        e.preventDefault();
+
+        var data = {};
+        var formData = new FormData(form);
+        for (var key of formData.keys()) {
+            data[key] = formData.get(key);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/uploads/{{ meta_data.ID }}',
+            data: data,
+            success: function () {
+                // hide form and show thank you note
+                document.querySelector('.submitted').classList.remove('hide')
+                document.querySelector('.form').classList.add('hide')
+            }
+        })
+    }
+
+    window.addEventListener('load', init, false);
+    window.addEventListener('submit', onSubmit, false);
+</script>
+
+</html>
