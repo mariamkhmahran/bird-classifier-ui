@@ -1,6 +1,6 @@
 # Bird Species Classification Web Application
 
-This repository contains a Flask web application for the classification of bird species. The system utilizes a pre-trained TensorFlow 2 model for bird detection, species identification, and localization. The application consists of three main parts: the web interface built using the Flask framework, the model served using TFServing, and the database configured using MySQL.
+This repository contains a Flask web application for the classification of bird species. The system utilizes a pre-trained TensorFlow 2 model for bird detection, species identification, and localization. The application consists of three main parts: the web interface built using the Flask framework, the model served using TFServing, and the database configured using MySQL. A demo video showcasing the system functionalities is [available here](https://drive.google.com/file/d/1K1SGPF6qVxvp7te4XNwk2kbfV3PgpC_4/view?usp=sharing).
 
 ## Objective
 
@@ -15,7 +15,7 @@ To run the bird species classification web application, follow these steps:
 3. Navigate to the repository directory.
 4. Make sure that MySQL is running on the localhost.
 5. From the root folder, run the following command: `mysql -u <username> -p < ./db/init.sql` to initialize the database.
-6. Go to `./client` subfolder, open app.py and update the MySQL config object with relevant configuration to your local MySQL. (the config object is defined right after import statements).
+6. Go to `./client` subfolder, open app.py and update the MySQL config object with the relevant configuration to your local MySQL. (the config object is defined right after import statements).
 7. From the root directory, build the Docker image: `docker build -t bird-classification-app .`
 8. Start the application using Docker Compose: `docker-compose up`
 9. Access the web application in your browser at `http://localhost:8080`
@@ -28,7 +28,7 @@ The system design is based on the level 1 MLOps maturity level as outlined by Go
 
 ### Model Overview
 
-The object detection model used in this project is a Faster R-CNN Resnet-101 V1 network. The model detects the presence of birds in an input image, classifies them into European robin, Coal Tit, and Eurasian magpie species, and localizes the birds within the image. Transfer learning was applied from the TensorFlow model zoo, and the model was further refined using a dataset of 3000 bird pictures. The model achieved an accuracy of 91% in testing, with mAP@0.50IOU of 0.863 and mAP@0.75IOU of 0.771. The model can be used for bird population monitoring, migration tracking, and studying bird behaviors in their natural habitats. After training and testing the model, it was frozen in preparation for deployment. The model was exported in the Google .pb file format which is directly used in this repository.
+The object detection model used in this project is a Faster R-CNN Resnet-101 V1 network. The model detects the presence of birds in an input image, classifies them into European robin, Coal Tit, and Eurasian magpie species, and localizes the birds within the image. Transfer learning was applied from the TensorFlow model zoo, and the model was further refined using a dataset of 3000 bird pictures. The model achieved an accuracy of 91% in testing, with mAP@0.50IOU of 0.863 and mAP@0.75IOU of 0.771. The model can be used for bird population monitoring, migration tracking, and studying bird behaviours in their natural habitats. After training and testing the model, it was frozen in preparation for deployment. The model was exported in the Google .pb file format, which is directly used in this repository.
 
 ### Model Serving
 
@@ -38,30 +38,30 @@ The server actively listens to the REST API port 8501, which is exposed for comm
 
 ### Flask Web Interface
 
-A user-friendly web interface built using Flask to facilitate interaction with the model. The root directory of the is in `./client`. The app is developed using python, css and html. Bootstrap and JQuery are used for styling and JS operations. Both libraries are included in the project using CDN links.
+A user-friendly web interface built using Flask to facilitate interaction with the model. The root directory of the flask app is in `./client`. The app is developed using Python, CSS and HTML. Bootstrap and JQuery are used for styling and JS operations. Both libraries are included in the project using CDN links.
 
 The app consists of three pages:
 
 1.  **Home page:**
 
-This page allows the user to upload any image in png, jpg or jpeg format. When the user click on upload button, the image is saved locally to the `./client/originals` folder. The image is also stored into the `images` table in the database with a unique ID. The page then redirects to `uploads/<ID>` where ID maps to the unique image ID in the images table inside the database.
+This page allows the user to upload any image in png, jpg or jpeg format. When the user clicks on the upload button, the image is saved locally to the `./client/originals` folder. The image is also stored in the `images` table in the database with a unique ID. The page then redirects to `uploads/<ID>`, where ID maps to the unique image ID in the images table inside the database.
 
 2. **Results page:**
 
-This page displays the inferencing results of an image. The original image is displayed as well as the inferenced image for comaprison. The name and unique ID of the image are also visible on the page. Additionally, each prediction is listed in a table where each row contains the name of the predicted class and the confidence score.
+This page displays the inferencing results of an image. The original image is displayed, as well as the inferenced image for comparison. The name and unique ID of the image are also visible on the page. Additionally, each prediction is listed in a table where each row contains the name of the predicted class and the confidence score.
 
-The url of this page is formatted as `uploads/<ID>`. This ID maps to the unique ID of this image in the images table in the database. When the page is first loaded, the page first looks for a record with the same ID in the inferences table.
+The URL of this page is formatted as `uploads/<ID>`. This ID maps to the unique ID of this image in the images table in the database. When the page is first loaded, the page first looks for a record with the same ID in the inferences table.
 
-- If such a record exists then this image was already inferenced and saved in the database. In this case, the previous results are displayed immediately.
+- If such a record exists, then this image was already inferenced and saved in the database. In this case, the previous results are displayed immediately.
 - Otherwise, the _inference_ function is called to send the image over to the server and get back the results. The new results are then stored in the database for future use. The resulting image with the bounding boxes is saved locally to the `./client/inferenced` folder.
 
-This page also contains a feedback section. This section allows the user to provide feedback on the quality of the results. This feedback helps in monitoring the performance of the model overtime to detect if a feature drift is happening or if the model requires retraining.
+This page also contains a feedback section. This section allows the user to provide feedback on the quality of the results. This feedback helps in monitoring the performance of the model over time to detect if a feature drift is happening or if the model requires retraining.
 
 The section contains a form asking the user whether or not the model had captured all existing birds in an image.
 
 - If the user votes yes, then the user satisfaction rate for this image is considered 100%.
 
-- If the the user votes no, then the user is asked to enter the number of birds present in the picture (ground truth) and the number of birds that were _accurately_ detected (predicted value). The user satisfaction rate is then calculated as predicted_value/ground_truth. (e.g. if the model predicts one of two birds correctly, then the user satisfaction rate is 50%).
+- If the user votes no, then the user is asked to enter the number of birds present in the picture (ground truth) and the number of birds that were _accurately_ detected (predicted value). The user satisfaction rate is then calculated as predicted_value/ground_truth. (e.g. if the model predicts one of two birds correctly, then the user satisfaction rate is 50%).
 
 The results of this form are saved into the `monitoring` table in the database.
 
@@ -69,32 +69,32 @@ The results of this form are saved into the `monitoring` table in the database.
 
 This page displays all the data stored in the `monitoring` table mentioned above. The page lists basic data about the model and the number of images uploaded to the app since its launch. The page also contains a graph illustrating and comparing the trends of the average scores of the 3 classes and the user satisfaction rate over time.
 
-This page is extremely beneficial for the monitoring stage of the workflow. It serves as an indicator for the reliability of this model and whether it requires re-training or fine tuning.
+This page is extremely beneficial for the monitoring stage of the workflow. It serves as an indicator of the reliability of this model and whether it requires re-training or fine-tuning.
 
 ### Data Storage
 
 An external MySQL database is used to store various elements across the pipeline, including user-uploaded pictures, prediction results, user feedback, and analytical values such as average confidence scores. MySQL is chosen for its reliability and widespread usage, providing efficient management, storage, and retrieval of data.
 
-The database used is called `birdsClassifier` and it contains three main tables:
+The database used is called `birdsClassifier`, and it contains three main tables:
 
 - images: This table stores the image blob and image name under a unique ID. Each row also contains a boolean value indicating whether or not the user has voted for the quality of inferencing for this image.
-- inferences: This table stores the inferencing results for images. Each record in the table represents one boundin box. Each image may be linked to multiple inferencing records (bounding box). Each record contains the unique ID of the image, the coordinates of the bounding box, the confidence score for this prediction, and the class ID.
-- monitoring: This table stores the results of user feedback and keeps track of the average confidence scores for each class overtime. Each row in this table contains the following data:
+- inferences: This table stores the inferencing results for images. Each record in the table represents one bounding box. Each image may be linked to multiple inferencing records (bounding box). Each record contains the unique ID of the image, the coordinates of the bounding box, the confidence score for this prediction, and the class ID.
+- monitoring: This table stores the results of user feedback and keeps track of the average confidence scores for each class over time. Each row in this table contains the following data:
 
   - **imageID** of the id of the image related to those results.
   - **Timestamp** of when this feedback was submitted.
-  - **Average confidence score for class 1** which is equal to the average score for this class over time.
-  - **Average confidence score for class 2** which is equal to the average score for this class over time.
-  - **Average confidence score for class 3** which is equal to the average score for this class over time.
+  - **Average confidence score for class 1**, which is equal to the average score for this class over time.
+  - **Average confidence score for class 2**, which is equal to the average score for this class over time.
+  - **Average confidence score for class 3**, which is equal to the average score for this class over time.
   - **Average user staisfaction rate** over time.
 
-  (with each feedback submitted those values are caclulated as the average between the score/rate in the last entry over the average score/rate in the new entry)
+  (with each feedback submitted, those values are calculated as the average between the score/rate in the last entry over the average score/rate in the new entry)
 
-In addition to those 3 tables, the database typically includes 15 more tables that act as a metadate store. The tables are added to the databse from MLMD.
+In addition to those 3 tables, the database typically includes 15 more tables that act as a metadata store. The tables are added to the database from MLMD.
 
 ### Metadata Store
 
-ML Metadata (MLMD) is used to manage model metadata and track model versions and experiments. MLMD keeps a record of how different versions of the model were trained and used, facilitating reproducibility and providing insights into model behavior and performance over time.
+ML Metadata (MLMD) is used to manage model metadata and track model versions and experiments. MLMD keeps a record of how different versions of the model were trained and used, facilitating reproducibility and providing insights into model behaviour and performance over time.
 
 The metadata store is initialized by running `python mlmd.init.sql` in the root directory. This executes a script to connect to MySQL, initialize the store, and add the saved model to the store as an artifact.
 
@@ -148,7 +148,7 @@ The repository structure is as follows:
 - README.md
 ```
 
-- The `client/` directory contains the Flask web application code. The `templates/` subdirectory includes the HTML templates for the web interface, `index.html` for file upload, `results.html` for displaying inference results, `monitor.html` for monitoring page and `404.html` as a error fallback page. The `static/` subdirectory contains the CSS stylesheets for the web application as well as relevant assets.
+- The `client/` directory contains the Flask web application code. The `templates/` subdirectory includes the HTML templates for the web interface, `index.html` for file upload, `results.html` for displaying inference results, `monitor.html` for the monitoring page and `404.html` as an error fallback page. The `static/` subdirectory contains the CSS stylesheets for the web application as well as relevant assets.
 - The `server/` directory holds the frozen model files, including `saved_model.pb` and the `variables/` directory.
 - The `db/` directory holds schema for the app data storage db.
 - `docker-compose.yml` is the configuration file for Docker Compose, defining the services and their dependencies.
