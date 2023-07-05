@@ -1,3 +1,5 @@
+:video_camera: [DEMO VIDEO](https://drive.google.com/file/d/1K1SGPF6qVxvp7te4XNwk2kbfV3PgpC_4/view?usp=sharing) | :computer: [MODEL TRAINING & EVALUATION DETAILS](https://github.com/mariamkhmahran/bird-classifier-model)
+
 # Bird Species Classification Web Application
 
 This repository contains a Flask web application for the classification of bird species. The system utilizes a pre-trained TensorFlow 2 model for bird detection, species identification, and localization. The application consists of three main parts: the web interface built using the Flask framework, the model served using TFServing, and the database configured using MySQL. A demo video showcasing the system functionalities is [available here](https://drive.google.com/file/d/1K1SGPF6qVxvp7te4XNwk2kbfV3PgpC_4/view?usp=sharing).
@@ -28,7 +30,7 @@ The system design is based on the level 1 MLOps maturity level as outlined by Go
 
 ### Model Overview
 
-The object detection model used in this project is a Faster R-CNN Resnet-101 V1 network. The model detects the presence of birds in an input image, classifies them into European robin, Coal Tit, and Eurasian magpie species, and localizes the birds within the image. Transfer learning was applied from the TensorFlow model zoo, and the model was further refined using a dataset of 3000 bird pictures. The model achieved an accuracy of 91% in testing, with mAP@0.50IOU of 0.863 and mAP@0.75IOU of 0.771. The model can be used for bird population monitoring, migration tracking, and studying bird behaviours in their natural habitats. After training and testing the model, it was frozen in preparation for deployment. The model was exported in the Google .pb file format, which is directly used in this repository.
+The object detection model used in this project is a Faster R-CNN Resnet-101 V1 network. The model detects the presence of birds in an input image, classifies them into European robin, Coal Tit, and Eurasian magpie species, and localizes the birds within the image. Transfer learning was applied from the TensorFlow model zoo, and the model was further refined using a dataset of 3000 bird pictures. The model achieved an accuracy of 91% in testing, with mAP@0.50IOU of 0.863 and mAP@0.75IOU of 0.771. The model can be used for bird population monitoring, migration tracking, and studying bird behaviours in their natural habitats. After training and testing the model, it was frozen in preparation for deployment. The model was exported in the Google .pb file format, which is directly used in this repository. More details about the training and evaluation of this model can be found [here](https://github.com/mariamkhmahran/bird-classifier-model).
 
 ### Model Serving
 
